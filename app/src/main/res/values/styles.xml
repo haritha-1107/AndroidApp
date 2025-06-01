@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Bottom Navigation Active Indicator -->
+    <style name="BottomNavActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/primary</item>
+        <item name="android:backgroundTint">@color/primary</item>
+    </style>
+
+    <!-- Bottom Navigation Style -->
+    <style name="BottomNavigationStyle" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemIconTint">@color/nav_selected</item>
+        <item name="itemTextColor">@color/nav_selected</item>
+        <item name="android:background">@color/nav_background</item>
+        <item name="itemRippleColor">@color/ripple_light</item>
+    </style>
+
+    <!-- App Bar Style -->
+    <style name="AppBarStyle" parent="ThemeOverlay.Material3.ActionBar">
+        <item name="android:background">@color/background_primary</item>
+        <item name="elevation">8dp</item>
+    </style>
+
+    <!-- Toolbar Title Style -->
+    <style name="ToolbarTitleStyle" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textColor">@color/on_primary</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- Splash Theme -->
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/background_primary</item>
+        <item name="android:statusBarColor">@color/primary</item>
+    </style>
+
+    <!-- Floating Action Button Shape -->
+    <style name="FabShapeAppearance">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- Custom FAB Style -->
+    <style name="CustomFabStyle" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="backgroundTint">@color/fab_background</item>
+        <item name="tint">@color/white</item>
+        <item name="rippleColor">@color/fab_ripple</item>
+        <item name="elevation">6dp</item>
+        <item name="pressedTranslationZ">12dp</item>
+        <item name="android:theme">@style/Theme.Material3.DayNight</item>
+    </style>
+
+    <!-- Toolbar Popup Menu Styling -->
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:textColor">@color/on_surface</item>
+        <item name="colorControlHighlight">@color/ripple_light</item>
+        <item name="android:background">@color/surface</item>
+    </style>
+
+    <!-- AppBar Overlay Styling -->
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.Material3.Dark.ActionBar">
+        <item name="colorControlNormal">@color/on_primary</item>
+    </style>
+
+    <!-- Card Style -->
+    <style name="CustomCardStyle" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/surface</item>
+        <item name="cardElevation">4dp</item>
+        <item name="cardCornerRadius">12dp</item>
+        <item name="rippleColor">@color/ripple_light</item>
+    </style>
+
+    <!-- Chip Styles -->
+    <style name="CustomChipStyle" parent="Widget.Material3.Chip.Filter">
+        <item name="chipBackgroundColor">@color/chip_background_inactive</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="chipStrokeColor">@color/track_color</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="rippleColor">@color/ripple_light</item>
+    </style>
+
+    <style name="CustomChipActiveStyle" parent="Widget.Material3.Chip.Filter">
+        <item name="chipBackgroundColor">@color/chip_background_active</item>
+        <item name="android:textColor">@color/on_primary</item>
+        <item name="chipStrokeColor">@color/primary</item>
+        <item name="chipStrokeWidth">0dp</item>
+        <item name="rippleColor">@color/fab_ripple</item>
+    </style>
+
+    <!-- Switch Style -->
+    <style name="CustomSwitchStyle" parent="Widget.Material3.CompoundButton.Switch">
+        <item name="thumbTint">@color/primary</item>
+        <item name="trackTint">@color/track_color</item>
+        <item name="android:colorControlActivated">@color/primary</item>
+    </style>
+
+    <!-- Button Styles -->
+    <style name="PrimaryButton" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/primary</item>
+        <item name="android:textColor">@color/on_primary</item>
+        <item name="rippleColor">@color/fab_ripple</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+
+    <style name="SecondaryButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/primary</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="rippleColor">@color/ripple_light</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+
+    <!-- Progress Indicator Style -->
+    <style name="CustomProgressIndicator" parent="Widget.Material3.CircularProgressIndicator">
+        <item name="indicatorColor">@color/primary</item>
+        <item name="trackColor">@color/track_color</item>
+        <item name="trackThickness">4dp</item>
+        <item name="trackCornerRadius">3dp</item>
+    </style>
+
+</resources>

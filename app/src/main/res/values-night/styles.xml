@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Bar Style for Dark Theme -->
+    <style name="AppBarStyle" parent="ThemeOverlay.Material3.Dark.ActionBar">
+        <item name="android:background">@color/background_primary</item>
+        <item name="elevation">8dp</item>
+    </style>
+
+    <!-- Toolbar Title Style for Dark Theme -->
+    <style name="ToolbarTitleStyle" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+</resources> 

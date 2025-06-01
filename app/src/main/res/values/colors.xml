@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ========================================= -->
+    <!-- LIGHT THEME COLORS                       -->
+    <!-- ========================================= -->
+    
+    <!-- Primary Brand Colors -->
+    <color name="primary">#9F86C0</color>              <!-- Elegant Periwinkle -->
+    <color name="primary_variant">#8871A6</color>      <!-- Deeper Periwinkle -->
+    <color name="primary_light">#BBA5D9</color>        <!-- Light Periwinkle -->
+    <color name="on_primary">#FFFFFF</color>           <!-- White on primary -->
+    
+    <!-- Secondary Colors -->
+    <color name="secondary">#7BA686</color>            <!-- Sage Green (complement) -->
+    <color name="secondary_variant">#6B9475</color>    <!-- Deeper Sage -->
+    <color name="secondary_light">#9BC2A0</color>      <!-- Light Sage -->
+    <color name="on_secondary">#FFFFFF</color>         <!-- White on secondary -->
+    
+    <!-- Surface & Background -->
+    <color name="background">#FEFEFE</color>           <!-- Pure white with warmth -->
+    <color name="surface">#FFFFFF</color>              <!-- Pure white surface -->
+    <color name="surface_variant">#F8F6FB</color>      <!-- Subtle periwinkle tint -->
+    <color name="surface_container">#F1EDF7</color>    <!-- Container surface -->
+    <color name="surface_bright">#FFFFFF</color>       <!-- Brightest surface -->
+    <color name="surface_dim">#E8E4F0</color>          <!-- Dimmed surface -->
+    
+    <!-- Text Colors -->
+    <color name="on_background">#1C1B1F</color>        <!-- Primary text on background -->
+    <color name="on_surface">#1C1B1F</color>          <!-- Primary text on surface -->
+    <color name="on_surface_variant">#49454F</color>   <!-- Secondary text -->
+    <color name="outline">#CAC4D0</color>              <!-- Subtle outlines -->
+    <color name="outline_variant">#E7E0EC</color>      <!-- Lighter outlines -->
+    
+    <!-- Text Hierarchy -->
+    <color name="text_primary">#1C1B1F</color>         <!-- Headline/primary text -->
+    <color name="text_secondary">#49454F</color>       <!-- Body/secondary text -->
+    <color name="text_tertiary">#79757F</color>        <!-- Caption/tertiary text -->
+    <color name="text_disabled">#B8B4C0</color>        <!-- Disabled text -->
+    
+    <!-- Status Colors -->
+    <color name="success">#4CAF50</color>              <!-- Material Green -->
+    <color name="warning">#FF9800</color>              <!-- Material Orange -->
+    <color name="error">#F44336</color>                <!-- Material Red -->
+    <color name="info">#2196F3</color>                 <!-- Material Blue -->
+    
+    <!-- Interactive Elements -->
+    <color name="accent">#9F86C0</color>               <!-- Same as primary -->
+    <color name="link">#8871A6</color>                 <!-- Link color -->
+    <color name="divider">#E7E0EC</color>              <!-- Subtle dividers -->
+    <color name="border">#CAC4D0</color>               <!-- Borders -->
+    <color name="ripple">#1A9F86C0</color>             <!-- Ripple effect -->
+    <color name="overlay">#40000000</color>            <!-- Modal overlay -->
+    
+    <!-- Component Specific -->
+    <color name="card_background">#FFFFFF</color>       <!-- Card backgrounds -->
+    <color name="card_border">#E7E0EC</color>          <!-- Card borders -->
+    <color name="fab_background">#9F86C0</color>       <!-- FAB background -->
+    <color name="chip_background">#E7E0EC</color>      <!-- Inactive chip -->
+    <color name="chip_background_active">#9F86C0</color> <!-- Active chip -->
+    <color name="chip_background_inactive">#E7E0EC</color> <!-- Inactive chip background -->
+    <color name="track_inactive">#E7E0EC</color>       <!-- Inactive tracks -->
+    <color name="track_active">#BBA5D9</color>         <!-- Active tracks -->
+    
+    <!-- Navigation -->
+    <color name="nav_background">#FFFFFF</color>        <!-- Navigation background -->
+    <color name="nav_selected">#9F86C0</color>         <!-- Selected nav item -->
+    <color name="nav_unselected">#79757F</color>       <!-- Unselected nav item -->
+    
+    <!-- Profile Specific -->
+    <color name="profile_background">#F8F6FB</color>    <!-- Profile page background -->
+    <color name="profile_card">#FFFFFF</color>          <!-- Profile cards -->
+    <color name="profile_highlight">#BBA5D9</color>     <!-- Profile highlights -->
+    <color name="profile_section_bg">#F1EDF7</color>    <!-- Profile sections -->
+    <color name="profile_text_primary">#1C1B1F</color>          <!-- Profile primary text -->
+    <color name="profile_text_secondary">#49454F</color>        <!-- Profile secondary text -->
+    <color name="profile_description">#79757F</color>           <!-- Profile description text -->
+    <color name="profile_item_background">#F8F6FB</color>       <!-- Profile item background -->
+    <color name="profile_divider">#E7E0EC</color>               <!-- Profile dividers -->
+    <color name="profile_icon_background">#F1EDF7</color>       <!-- Profile icon background -->
+    <color name="profile_icon_tint">#9F86C0</color>             <!-- Profile icon tint -->
+    <color name="profile_section_header">#49454F</color>        <!-- Profile section headers -->
+    <color name="profile_card_elevation">#F1EDF7</color>        <!-- Profile card elevation -->
+    <color name="profile_ripple">#1A9F86C0</color>              <!-- Profile ripple effect -->
+    
+    <!-- Profile Card Colors -->
+    <color name="profile_card_background_light">#FFFFFF</color>
+    <color name="profile_card_stroke_light">#E7E0EC</color>
+    <color name="profile_card_active_light">#F8F6FB</color>
+    <color name="profile_card_active_stroke_light">#BBA5D9</color>
+    <color name="chip_background_active_light">#9F86C0</color>
+    <color name="chip_text_active_light">#FFFFFF</color>
+    <color name="chip_background_inactive_light">#E7E0EC</color>
+    <color name="chip_text_inactive_light">#79757F</color>
+    
+    <!-- ========================================= -->
+    <!-- UTILITY COLORS                           -->
+    <!-- ========================================= -->
+    
+    <!-- Base Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    
+    <!-- Alpha Variants -->
+    <color name="white_90">#E6FFFFFF</color>
+    <color name="white_80">#CCFFFFFF</color>
+    <color name="white_60">#99FFFFFF</color>
+    <color name="white_40">#66FFFFFF</color>
+    <color name="white_20">#33FFFFFF</color>
+    <color name="white_10">#1AFFFFFF</color>
+    
+    <color name="black_90">#E6000000</color>
+    <color name="black_80">#CC000000</color>
+    <color name="black_60">#99000000</color>
+    <color name="black_40">#66000000</color>
+    <color name="black_20">#33000000</color>
+    <color name="black_10">#1A000000</color>
+    
+    <!-- ========================================= -->
+    <!-- LEGACY COMPATIBILITY                     -->
+    <!-- ========================================= -->
+    
+    <!-- Keep these for backward compatibility -->
+    <color name="primary_color">@color/primary</color>
+    <color name="primary_dark">@color/primary_variant</color>
+    <color name="accent_color">@color/accent</color>
+    <color name="background_primary">@color/background</color>
+    <color name="background_light">@color/surface_variant</color>
+    <color name="background_color">@color/background</color>
+    <color name="stroke_color">@color/outline</color>
+    <color name="layout_background">@color/surface_variant</color>
+    
+    <!-- Status legacy -->
+    <color name="error_red">@color/error</color>
+    <color name="success_green">@color/success</color>
+    <color name="warning_orange">@color/warning</color>
+    <color name="status_connected">@color/success</color>
+    <color name="status_disconnected">@color/error</color>
+    <color name="status_connecting">@color/warning</color>
+    
+    <!-- Component legacy -->
+    <color name="light_gray">@color/surface_variant</color>
+    <color name="medium_gray">@color/surface_dim</color>
+    <color name="track_color">@color/track_inactive</color>
+    <color name="chip_text_active">#FFFFFF</color>
+    <color name="chip_text_inactive">#79757F</color>
+    <color name="splash_background">@color/background</color>
+    <color name="splash_primary_text">@color/text_primary</color>
+    <color name="splash_secondary_text">@color/text_secondary</color>
+    <color name="fab_ripple">@color/ripple</color>
+    <color name="overlay_background">@color/overlay</color>
+    <color name="ripple_light">@color/ripple</color>
+
+    <!-- Dark Theme Base Colors (for fallback) -->
+    <color name="text_primary_dark">@color/text_primary</color>
+    <color name="text_secondary_dark">@color/text_secondary</color>
+    <color name="background_primary_dark">@color/background</color>
+    <color name="nav_background_dark">@color/nav_background</color>
+    <color name="on_primary_dark">@color/on_primary</color>
+    <color name="ripple_dark">@color/ripple</color>
+    <color name="bottom_nav_item_color_dark">@color/nav_selected</color>
+    <color name="nav_selected_dark">@color/nav_selected</color>
+    <color name="nav_unselected_dark">@color/nav_unselected</color>
+
+    <!-- Dark Theme Profile Card Colors (Base values for fallback) -->
+    <color name="profile_card_background_dark">@color/profile_card_background</color>
+    <color name="profile_card_stroke_dark">@color/profile_card_stroke</color>
+    <color name="profile_card_active_dark">@color/profile_card_active</color>
+    <color name="profile_card_active_stroke_dark">@color/profile_card_active_stroke</color>
+    <color name="chip_background_active_dark">@color/chip_background_active</color>
+    <color name="chip_text_active_dark">@color/chip_text_active</color>
+    <color name="chip_background_inactive_dark">@color/chip_background_inactive</color>
+    <color name="chip_text_inactive_dark">@color/chip_text_inactive</color>
+
+    <!-- Dark Theme Component Colors (Base values for fallback) -->
+    <color name="card_background_dark">@color/card_background</color>
+    <color name="stroke_color_dark">@color/stroke_color</color>
+
+    <!-- Profile Card Colors (Base values for fallback) -->
+    <color name="profile_card_background">@color/profile_card_background_light</color>
+    <color name="profile_card_stroke">@color/profile_card_stroke_light</color>
+    <color name="profile_card_active">@color/profile_card_active_light</color>
+    <color name="profile_card_active_stroke">@color/profile_card_active_stroke_light</color>
+</resources>
+
+

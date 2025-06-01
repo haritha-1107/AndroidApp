@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ========================================= -->
+    <!-- DARK THEME COLORS                        -->
+    <!-- ========================================= -->
+    
+    <!-- Primary Brand Colors -->
+    <color name="primary">#6B5A7A</color>              <!-- Darker periwinkle for dark mode -->
+    <color name="primary_variant">#5A4969</color>      <!-- Even darker periwinkle -->
+    <color name="primary_light">#7D6B8A</color>        <!-- Slightly lighter periwinkle -->
+    <color name="on_primary">#E6E1E5</color>           <!-- Light text on primary -->
+    
+    <!-- Secondary Colors -->
+    <color name="secondary">#9BC2A0</color>            <!-- Light sage for dark -->
+    <color name="secondary_variant">#7BA686</color>    <!-- Medium sage -->
+    <color name="secondary_light">#B5D4BA</color>      <!-- Very light sage -->
+    <color name="on_secondary">#1A3A1F</color>         <!-- Dark text on secondary -->
+    
+    <!-- Surface & Background -->
+    <color name="background">#0F0D13</color>           <!-- Deep dark background -->
+    <color name="surface">#1C1B1F</color>              <!-- Dark surface -->
+    <color name="surface_variant">#49454F</color>      <!-- Dark surface variant -->
+    <color name="surface_container">#211F26</color>    <!-- Dark container -->
+    <color name="surface_bright">#3B383E</color>       <!-- Bright dark surface -->
+    <color name="surface_dim">#161218</color>          <!-- Dimmed dark surface -->
+    
+    <!-- Text Colors -->
+    <color name="on_background">#E6E1E5</color>        <!-- Light text on dark bg -->
+    <color name="on_surface">#E6E1E5</color>           <!-- Light text on dark surface -->
+    <color name="on_surface_variant">#CAC4D0</color>   <!-- Secondary text dark -->
+    <color name="outline">#938F99</color>              <!-- Dark outlines -->
+    <color name="outline_variant">#49454F</color>      <!-- Dark outline variant -->
+    
+    <!-- Text Hierarchy -->
+    <color name="text_primary">#E6E1E5</color>         <!-- Primary text dark -->
+    <color name="text_secondary">#CAC4D0</color>       <!-- Secondary text dark -->
+    <color name="text_tertiary">#938F99</color>        <!-- Tertiary text dark -->
+    <color name="text_disabled">#625F66</color>        <!-- Disabled text dark -->
+    
+    <!-- Status Colors -->
+    <color name="success">#66BB6A</color>              <!-- Light green for dark -->
+    <color name="warning">#FFB74D</color>              <!-- Light orange for dark -->
+    <color name="error">#EF5350</color>                <!-- Light red for dark -->
+    <color name="info">#42A5F5</color>                 <!-- Light blue for dark -->
+    
+    <!-- Interactive Elements -->
+    <color name="accent">#6B5A7A</color>               <!-- Same as primary -->
+    <color name="link">#7D6B8A</color>                 <!-- Lighter periwinkle for links -->
+    <color name="divider">#49454F</color>              <!-- Dark dividers -->
+    <color name="border">#938F99</color>               <!-- Dark borders -->
+    <color name="ripple">#336B5A7A</color>             <!-- Dark ripple effect -->
+    <color name="overlay">#80000000</color>            <!-- Dark modal overlay -->
+    
+    <!-- Component Specific -->
+    <color name="card_background">#1C1B1F</color>      <!-- Dark card background -->
+    <color name="card_border">#49454F</color>          <!-- Dark card border -->
+    <color name="fab_background">#6B5A7A</color>       <!-- Dark FAB background -->
+    <color name="chip_background">#49454F</color>      <!-- Dark inactive chip -->
+    <color name="chip_background_active">#6B5A7A</color> <!-- Dark active chip -->
+    <color name="track_inactive">#49454F</color>       <!-- Dark inactive track -->
+    <color name="track_active">#6B5A7A</color>         <!-- Dark active track -->
+    
+    <!-- Navigation -->
+    <color name="nav_background">#1C1B1F</color>       <!-- Dark nav background -->
+    <color name="nav_selected">#6B5A7A</color>         <!-- Dark selected nav -->
+    <color name="nav_unselected">#938F99</color>       <!-- Dark unselected nav -->
+    
+    <!-- Profile Specific -->
+    <color name="profile_background">#161218</color>    <!-- Dark profile background -->
+    <color name="profile_card">#1C1B1F</color>          <!-- Dark profile cards -->
+    <color name="profile_highlight">#6B5A7A</color>    <!-- Dark profile highlight -->
+    <color name="profile_section_bg">#211F26</color>    <!-- Dark profile sections -->
+    <color name="profile_text_primary">#E6E1E5</color>          <!-- Dark profile primary text -->
+    <color name="profile_text_secondary">#CAC4D0</color>        <!-- Dark profile secondary text -->
+    <color name="profile_description">#938F99</color>           <!-- Dark profile description -->
+    <color name="profile_card_background">#1C1B1F</color>       <!-- Dark profile card background -->
+    <color name="profile_item_background">#0F0D13</color>       <!-- Dark profile item background -->
+    <color name="profile_divider">#49454F</color>               <!-- Dark profile dividers -->
+    <color name="profile_icon_background">#49454F</color>       <!-- Dark profile icon background -->
+    <color name="profile_icon_tint">#6B5A7A</color>    <!-- Dark profile icon tint -->
+    <color name="profile_section_header">#CAC4D0</color>        <!-- Dark profile section headers -->
+    <color name="profile_card_elevation">#0A0911</color>        <!-- Dark profile card elevation -->
+    <color name="profile_ripple">#336B5A7A</color>              <!-- Dark profile ripple -->
+    
+    <!-- Profile Card Colors -->
+    <color name="profile_card_background_dark">#1C1B1F</color>
+    <color name="profile_card_stroke_dark">#49454F</color>
+    <color name="profile_card_active_dark">#211F26</color>
+    <color name="profile_card_active_stroke_dark">#6B5A7A</color>
+    <color name="chip_background_active_dark">#6B5A7A</color>
+    <color name="chip_text_active_dark">#E6E1E5</color>
+    <color name="chip_background_inactive_dark">#49454F</color>
+    <color name="chip_text_inactive_dark">#938F99</color>
+    
+    <!-- ========================================= -->
+    <!-- UTILITY COLORS                           -->
+    <!-- ========================================= -->
+    
+    <!-- Base Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    
+    <!-- Alpha Variants -->
+    <color name="white_90">#E6FFFFFF</color>
+    <color name="white_80">#CCFFFFFF</color>
+    <color name="white_60">#99FFFFFF</color>
+    <color name="white_40">#66FFFFFF</color>
+    <color name="white_20">#33FFFFFF</color>
+    <color name="white_10">#1AFFFFFF</color>
+    
+    <color name="black_90">#E6000000</color>
+    <color name="black_80">#CC000000</color>
+    <color name="black_60">#99000000</color>
+    <color name="black_40">#66000000</color>
+    <color name="black_20">#33000000</color>
+    <color name="black_10">#1A000000</color>
+    
+    <!-- ========================================= -->
+    <!-- LEGACY COMPATIBILITY                     -->
+    <!-- ========================================= -->
+    
+    <!-- Keep these for backward compatibility -->
+    <color name="primary_color">@color/primary</color>
+    <color name="primary_dark">@color/primary_variant</color>
+    <color name="accent_color">@color/accent</color>
+    <color name="background_primary">@color/background</color>
+    <color name="background_light">@color/surface_variant</color>
+    <color name="background_color">@color/background</color>
+    <color name="stroke_color">@color/outline</color>
+    <color name="layout_background">@color/surface_variant</color>
+    
+    <!-- Status legacy -->
+    <color name="error_red">@color/error</color>
+    <color name="success_green">@color/success</color>
+    <color name="warning_orange">@color/warning</color>
+    <color name="status_connected">@color/success</color>
+    <color name="status_disconnected">@color/error</color>
+    <color name="status_connecting">@color/warning</color>
+    
+    <!-- Component legacy -->
+    <color name="light_gray">@color/surface_variant</color>
+    <color name="medium_gray">@color/surface_dim</color>
+    <color name="track_color">@color/track_inactive</color>
+    <color name="chip_text_active">#371E3C</color>
+    <color name="chip_text_inactive">#938F99</color>
+    <color name="splash_background">@color/background</color>
+    <color name="splash_primary_text">@color/text_primary</color>
+    <color name="splash_secondary_text">@color/text_secondary</color>
+    <color name="fab_ripple">@color/ripple</color>
+    <color name="overlay_background">@color/overlay</color>
+    <color name="ripple_light">@color/ripple</color>
+
+    <!-- Dark Theme Specific Colors -->
+    <color name="text_primary_dark">#E6E1E5</color>         <!-- Primary text dark -->
+    <color name="text_secondary_dark">#CAC4D0</color>       <!-- Secondary text dark -->
+    <color name="background_primary_dark">#0F0D13</color>   <!-- Deep dark background -->
+    <color name="nav_background_dark">#1C1B1F</color>       <!-- Dark nav background -->
+    <color name="on_primary_dark">#E6E1E5</color>           <!-- Light text on primary -->
+    <color name="ripple_dark">#336B5A7A</color>             <!-- Dark ripple effect -->
+    <color name="bottom_nav_item_color_dark">#6B5A7A</color> <!-- Dark nav item color -->
+    <color name="nav_selected_dark">#6B5A7A</color>         <!-- Dark selected nav item -->
+    <color name="nav_unselected_dark">#938F99</color>       <!-- Dark unselected nav item -->
+</resources>

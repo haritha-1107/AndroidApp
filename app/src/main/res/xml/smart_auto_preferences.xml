@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreferenceCompat
+        android:key="auto_mode_enabled"
+        android:title="Enable Calendar Auto Mode"
+        android:summary="Automatically change ringer mode based on calendar events"
+        android:defaultValue="false" />
+
+    <SwitchPreferenceCompat
+        android:key="auto_mode_revert_after_event"
+        android:title="Revert After Event"
+        android:summary="Return to previous ringer mode when event ends"
+        android:defaultValue="true"
+        android:dependency="auto_mode_enabled" />
+
+    <SwitchPreferenceCompat
+        android:key="auto_mode_busy_events_only"
+        android:title="Busy Events Only"
+        android:summary="Only change ringer mode for events marked as 'Busy'"
+        android:defaultValue="true"
+        android:dependency="auto_mode_enabled" />
+
+    <SeekBarPreference
+        android:key="auto_mode_pre_event_offset"
+        android:title="Minutes Before Event"
+        android:summary="Change ringer mode this many minutes before event starts"
+        android:defaultValue="5"
+        android:max="30"
+        android:dependency="auto_mode_enabled" />
+
+</PreferenceScreen> 

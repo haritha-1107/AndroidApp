@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Use unrestricted key first for testing. Once map works, you can add restrictions -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDZEinSwiNg-_hbhuz1j3oTDsWdHg4YnBw</string>
+</resources> 

@@ -1,0 +1,85 @@
+<resources>
+    <string name="app_name">sssshhift</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_profile">Add Profile</string>
+
+    <!-- Existing strings... -->
+
+    <!-- Connectivity Settings -->
+    <string name="connectivity_settings_title">Connectivity Settings</string>
+    <string name="bluetooth_title">Bluetooth</string>
+    <string name="wifi_title">WiFi</string>
+    <string name="scan_bluetooth_devices">Scan for Devices</string>
+    <string name="scan_wifi_networks">Scan for Networks</string>
+    <string name="available_devices">Available Devices</string>
+    <string name="available_networks">Available Networks</string>
+    <string name="quick_actions">Quick Actions</string>
+    <string name="bluetooth_settings">BT Settings</string>
+    <string name="wifi_settings">WiFi Settings</string>
+
+    <!-- Status messages -->
+    <string name="bluetooth_on">Bluetooth is ON</string>
+    <string name="bluetooth_off">Bluetooth is OFF</string>
+    <string name="wifi_on">WiFi is ON</string>
+    <string name="wifi_off">WiFi is OFF</string>
+    <string name="bluetooth_not_supported">Bluetooth not supported</string>
+    <string name="wifi_not_supported">WiFi not supported</string>
+
+    <!-- Permissions -->
+    <string name="bluetooth_permissions_required">Bluetooth permissions required</string>
+    <string name="wifi_permissions_required">WiFi permissions required</string>
+    <string name="location_permission_rationale">Location permission is required for WiFi scanning and Bluetooth device discovery.</string>
+
+    <!-- Actions -->
+    <string name="pair">Pair</string>
+    <string name="unpair">Unpair</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="cancel">Cancel</string>
+    <string name="scanning">Scanning...</string>
+
+    <!-- Notifications -->
+    <string name="pairing_with_device">Pairing with %s</string>
+    <string name="connected_to_device">Connected to %s</string>
+    <string name="disconnected_from_device">Disconnected from %s</string>
+    <string name="connecting_to_network">Connecting to %s</string>
+    <string name="connected_to_network">Connected to %s</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="onboarding_title">Welcome</string>
+    <string name="add_profile_title">Add Profile</string>
+    <string name="edit_profile_title">Edit Profile</string>
+    <string name="location_picker_title">Pick Location</string>
+
+    <!-- Smart Auto Mode -->
+    <string name="smart_auto_mode_title">Smart Auto Mode</string>
+    <string name="smart_auto_mode_enable">Enable automatic silent mode for calendar events</string>
+    <string name="smart_auto_mode_keywords">Keywords to match:</string>
+    <string name="smart_auto_mode_add_keyword">Add new keyword</string>
+    <string name="smart_auto_mode_activate">Activate silent mode:</string>
+    <string name="smart_auto_mode_minutes_before">Minutes before event starts</string>
+    <string name="smart_auto_mode_revert">Revert mode after event ends</string>
+    <string name="smart_auto_mode_busy_only">Only apply to \'Busy\' events</string>
+    <string name="smart_auto_mode_permission_required">Calendar permission is required for Smart Auto Mode</string>
+
+    <!-- Location Picker -->
+    <string name="get_current_location">Get Current Location</string>
+    <string name="save_location">Save Location</string>
+    <string name="location_permission_required">Location permission is required</string>
+    <string name="location_trigger_enabled">Location trigger enabled</string>
+    <string name="location_trigger_disabled">Location trigger disabled</string>
+    <string name="select_location">Select Location</string>
+    <string name="current_location">Current Location</string>
+    <string name="search_location">Search location</string>
+
+    <!-- Usage Insights -->
+    <string name="usage_insights">Usage Insights</string>
+    <string name="total_silent_time">Total Silent Time</string>
+    <string name="most_used_mode">Most Used Mode</string>
+    <string name="peak_hour">Peak Activity Hour</string>
+    <string name="recent_activity">Recent Activity</string>
+    <string name="used_x_times">Used %d times</string>
+    <string name="x_activations">%d activations</string>
+</resources>
