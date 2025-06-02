@@ -73,6 +73,7 @@
     <color name="profile_text_primary">#F1F5F9</color>
     <color name="profile_text_secondary">#CBD5E1</color>
     <color name="profile_description">#94A3B8</color>
-    <color name="profile_card_background">#1E293B</color>
-    <color name="profile_item_background">#0F172A</color>
+    <color name="profile_card_background">#343B622D</color>
+    <color name="profile_item_background">#161F38FF</color>
+    <color name="secondary_text">#C2C6D3AD</color>
 </resources>

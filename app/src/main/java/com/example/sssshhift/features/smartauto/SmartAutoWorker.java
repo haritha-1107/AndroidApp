@@ -50,9 +50,9 @@ public class SmartAutoWorker extends Worker {
         try {
             Log.d(TAG, "Starting periodic calendar check");
             
-            Context context = getApplicationContext();
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            
+        Context context = getApplicationContext();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
             // Only proceed if the feature is enabled
             if (!prefs.getBoolean("auto_mode_enabled", false)) {
                 Log.d(TAG, "Smart Auto Mode is disabled, skipping work");
@@ -74,7 +74,7 @@ public class SmartAutoWorker extends Worker {
                     true // Only consider busy events
                 );
                 Log.d(TAG, "Successfully checked and scheduled calendar events");
-                return Result.success();
+            return Result.success();
             } catch (Exception e) {
                 Log.e(TAG, "Error checking calendar events: " + e.getMessage());
                 e.printStackTrace();
@@ -289,12 +289,12 @@ public class SmartAutoWorker extends Worker {
     public static void scheduleWork(Context context) {
         try {
             Log.d(TAG, "Scheduling periodic work");
-
+        
             Constraints constraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
                 .build();
 
-            PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
                 SmartAutoWorker.class,
                 WORK_INTERVAL_MINUTES,
                 TimeUnit.MINUTES)
@@ -305,11 +305,11 @@ public class SmartAutoWorker extends Worker {
             // Use REPLACE policy to ensure we don't queue multiple workers
             WorkManager.getInstance(context)
                 .enqueueUniquePeriodicWork(
-                    WORK_NAME,
+                WORK_NAME,
                     ExistingPeriodicWorkPolicy.UPDATE,
-                    workRequest
-                );
-
+                workRequest
+        );
+        
             Log.d(TAG, "Successfully scheduled periodic work");
         } catch (Exception e) {
             Log.e(TAG, "Error scheduling work: " + e.getMessage());
@@ -319,7 +319,7 @@ public class SmartAutoWorker extends Worker {
 
     public static void cancelWork(Context context) {
         try {
-            WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME);
+        WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME);
             Log.d(TAG, "Cancelled periodic work");
         } catch (Exception e) {
             Log.e(TAG, "Error cancelling work: " + e.getMessage());

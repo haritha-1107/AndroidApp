@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PathMeasure;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
@@ -59,24 +60,9 @@ import java.util.concurrent.TimeUnit;
 public class SplashActivity extends AppCompatActivity {
 
     private static final String TAG = "SplashActivity";
-    private static final int SPLASH_DELAY = 3500; // 3.5 seconds
     private static final String PREFS_NAME = "app_prefs";
     private static final String KEY_ONBOARDING_COMPLETED = "onboarding_completed";
-
     private SharedPreferences prefs;
-    private Handler animationHandler;
-
-    // Views
-    private ImageView logo, waveBg1, waveBg2;
-    private TextView title, tagline, loadingText;
-    private ProgressBar progressBar;
-    private View[] soundWaves = new View[10];
-    private String[] loadingPhrases = {
-        "Initializing...",
-        "Loading profiles...",
-        "Setting up silence...",
-        "Almost ready..."
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,344 +70,318 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        animationHandler = new Handler(Looper.getMainLooper());
-
-        // Debug logging
-        boolean onboardingCompleted = prefs.getBoolean(KEY_ONBOARDING_COMPLETED, false);
-        Log.d(TAG, "=== SPLASH ACTIVITY DEBUG ===");
-        Log.d(TAG, "Onboarding completed: " + onboardingCompleted);
-        Log.d(TAG, "All SharedPreferences:");
-        for (String key : prefs.getAll().keySet()) {
-            Log.d(TAG, "  " + key + " = " + prefs.getAll().get(key));
-        }
-        Log.d(TAG, "=============================");
-
-        initializeViews();
-        startAnimationSequence();
-
-        // Navigate after animations
-        animationHandler.postDelayed(this::navigateToNextScreen, SPLASH_DELAY);
-    }
-
-    private void initializeViews() {
-        // Main elements
-        logo = findViewById(R.id.splash_logo);
-        title = findViewById(R.id.splash_title);
-        tagline = findViewById(R.id.splash_tagline);
-        loadingText = findViewById(R.id.loading_text);
-        progressBar = findViewById(R.id.splash_progress);
-        waveBg1 = findViewById(R.id.wave_bg_1);
-        waveBg2 = findViewById(R.id.wave_bg_2);
-
-        // Initialize sound wave bars
-        for (int i = 0; i < 10; i++) {
-            int resId = getResources().getIdentifier("wave_" + (i + 1), "id", getPackageName());
-            soundWaves[i] = findViewById(resId);
-        }
-    }
-
-    private void startAnimationSequence() {
-        // 1. Start background wave animations
-        animateBackgroundWaves();
-
-        // 2. Animate logo entrance (0-500ms)
-        animateLogo();
-
-        // 3. Start sound wave animation (500ms)
-        animationHandler.postDelayed(this::startSoundWaveAnimation, 500);
-
-        // 4. Animate title and tagline (800ms)
-        animationHandler.postDelayed(this::animateTitleAndTagline, 800);
-
-        // 5. Start loading animation (1200ms)
-        animationHandler.postDelayed(this::startLoadingAnimation, 1200);
-    }
-
-    private void animateBackgroundWaves() {
-        // Animate top wave
-        ObjectAnimator waveAnim1 = ObjectAnimator.ofFloat(waveBg1, "translationX", 0f, -200f);
-        waveAnim1.setDuration(3000);
-        waveAnim1.setRepeatCount(ValueAnimator.INFINITE);
-        waveAnim1.setRepeatMode(ValueAnimator.REVERSE);
-        waveAnim1.setInterpolator(new LinearInterpolator());
-        waveAnim1.start();
-
-        // Animate bottom wave (opposite direction)
-        ObjectAnimator waveAnim2 = ObjectAnimator.ofFloat(waveBg2, "translationX", -200f, 0f);
-        waveAnim2.setDuration(3000);
-        waveAnim2.setRepeatCount(ValueAnimator.INFINITE);
-        waveAnim2.setRepeatMode(ValueAnimator.REVERSE);
-        waveAnim2.setInterpolator(new LinearInterpolator());
-        waveAnim2.start();
-    }
-
-    private void animateLogo() {
-        logo.setScaleX(0f);
-        logo.setScaleY(0f);
-        logo.setRotation(-30f);
-        logo.setAlpha(0f);
-
-        AnimatorSet logoAnim = new AnimatorSet();
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(logo, "scaleX", 0f, 1.2f, 1f);
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(logo, "scaleY", 0f, 1.2f, 1f);
-        ObjectAnimator rotation = ObjectAnimator.ofFloat(logo, "rotation", -30f, 0f);
-        ObjectAnimator alpha = ObjectAnimator.ofFloat(logo, "alpha", 0f, 1f);
-
-        logoAnim.playTogether(scaleX, scaleY, rotation, alpha);
-        logoAnim.setDuration(1000);
-        logoAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-        logoAnim.start();
-
-        // Add subtle floating animation after entrance
-        animationHandler.postDelayed(() -> {
-            ObjectAnimator floatAnim = ObjectAnimator.ofFloat(logo, "translationY", 0f, -8f, 0f);
-            floatAnim.setDuration(2000);
-            floatAnim.setRepeatCount(ValueAnimator.INFINITE);
-            floatAnim.setRepeatMode(ValueAnimator.REVERSE);
-            floatAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-            floatAnim.start();
-        }, 1000);
-    }
-
-    private void startSoundWaveAnimation() {
-        for (int i = 0; i < soundWaves.length; i++) {
-            final View wave = soundWaves[i];
-            wave.setAlpha(0f);
-            wave.setScaleY(0.3f);
-
-            // Create wave animation
-            ObjectAnimator alpha = ObjectAnimator.ofFloat(wave, "alpha", 0f, 1f);
-            alpha.setRepeatCount(ValueAnimator.INFINITE);
-            alpha.setRepeatMode(ValueAnimator.REVERSE);
-
-            ObjectAnimator scaleY = ObjectAnimator.ofFloat(wave, "scaleY", 0.3f, 1f, 0.3f);
-            scaleY.setRepeatCount(ValueAnimator.INFINITE);
-            scaleY.setRepeatMode(ValueAnimator.REVERSE);
-
-            AnimatorSet waveAnim = new AnimatorSet();
-            waveAnim.playTogether(alpha, scaleY);
-            waveAnim.setDuration(1000);
-            waveAnim.setStartDelay(i * 100);
-            waveAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-            waveAnim.start();
-        }
-    }
-
-    private void animateTitleAndTagline() {
-        // Animate title with bounce effect
-        title.setAlpha(0f);
-        title.setTranslationY(40f);
-        AnimatorSet titleAnim = new AnimatorSet();
         
-        ObjectAnimator titleAlpha = ObjectAnimator.ofFloat(title, "alpha", 0f, 1f);
-        titleAlpha.setDuration(400);
-        
-        ObjectAnimator titleTranslate = ObjectAnimator.ofFloat(title, "translationY", 40f, -5f, 0f);
-        titleTranslate.setDuration(700);
-        
-        ObjectAnimator titleScale = ObjectAnimator.ofFloat(title, "scaleX", 0.8f, 1.1f, 1f);
-        ObjectAnimator titleScaleY = ObjectAnimator.ofFloat(title, "scaleY", 0.8f, 1.1f, 1f);
-        titleScale.setDuration(700);
-        titleScaleY.setDuration(700);
-        
-        titleAnim.playTogether(titleAlpha, titleTranslate, titleScale, titleScaleY);
-        titleAnim.start();
-
-        // Animate tagline with fade and slide
-        tagline.setAlpha(0f);
-        tagline.setTranslationY(20f);
-        AnimatorSet taglineAnim = new AnimatorSet();
-        
-        ObjectAnimator taglineAlpha = ObjectAnimator.ofFloat(tagline, "alpha", 0f, 1f);
-        taglineAlpha.setDuration(400);
-        
-        ObjectAnimator taglineTranslate = ObjectAnimator.ofFloat(tagline, "translationY", 20f, 0f);
-        taglineTranslate.setDuration(500);
-        
-        taglineAnim.playTogether(taglineAlpha, taglineTranslate);
-        taglineAnim.setStartDelay(300);
-        taglineAnim.start();
-    }
-
-    private void startLoadingAnimation() {
-        // Show and animate progress bar with fade and expand
-        progressBar.setAlpha(0f);
-        progressBar.setScaleX(0.3f);
-        progressBar.setProgress(0);
-
-        AnimatorSet progressAnim = new AnimatorSet();
-        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(progressBar, "alpha", 0f, 1f);
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(progressBar, "scaleX", 0.3f, 1f);
-        progressAnim.playTogether(fadeIn, scaleX);
-        progressAnim.setDuration(500);
-        progressAnim.start();
-
-        ObjectAnimator progress = ObjectAnimator.ofInt(progressBar, "progress", 0, 100);
-        progress.setDuration(2000);
-        progress.setInterpolator(new AccelerateDecelerateInterpolator());
-        progress.setStartDelay(300);
-        progress.start();
-
-        // Start typing animation for loading text with fade
-        loadingText.setAlpha(0f);
-        ObjectAnimator textFade = ObjectAnimator.ofFloat(loadingText, "alpha", 0f, 1f);
-        textFade.setDuration(300);
-        textFade.start();
-
-        // Start typing animation
-        animateLoadingText(0);
-    }
-
-    private void animateLoadingText(final int index) {
-        if (index >= loadingPhrases.length) return;
-        
-        String text = loadingPhrases[index];
-        loadingText.setText("");
-        
-        final int[] charIndex = {0};
-        final Handler handler = new Handler();
-        final Runnable typingRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (charIndex[0] < text.length()) {
-                    loadingText.setText(text.substring(0, ++charIndex[0]));
-                    handler.postDelayed(this, 50);
-                } else if (index < loadingPhrases.length - 1) {
-                    handler.postDelayed(() -> animateLoadingText(index + 1), 500);
-                }
-            }
-        };
-        handler.postDelayed(typingRunnable, 100);
-    }
-
-    private void navigateToNextScreen() {
-        boolean onboardingCompleted = prefs.getBoolean(KEY_ONBOARDING_COMPLETED, false);
-        Log.d(TAG, "=== NAVIGATION DEBUG ===");
-        Log.d(TAG, "Navigating... Onboarding completed: " + onboardingCompleted);
-        
-        // Fresh check of onboarding status
-        onboardingCompleted = prefs.getBoolean(KEY_ONBOARDING_COMPLETED, false);
-        Log.d(TAG, "Fresh check - Onboarding completed: " + onboardingCompleted);
-
-        // Create ripple transition effect
+        // Start animation sequence immediately
         createRippleTransition(() -> {
-            // Start appropriate activity
-            Log.d(TAG, "Starting MainActivity");
             Intent intent = new Intent(this, MainActivity.class);
-            Log.d(TAG, "Starting activity: " + intent.getComponent().getClassName());
             startActivity(intent);
-            overridePendingTransition(R.anim.main_enter, R.anim.splash_exit);
             finish();
-            Log.d(TAG, "========================");
         });
     }
 
     private void createRippleTransition(Runnable onComplete) {
         final View rootView = getWindow().getDecorView().findViewById(android.R.id.content);
         final Choreographer choreographer = Choreographer.getInstance();
+
+        // Create background
+        rootView.setBackgroundColor(Color.WHITE);
+
+        // Create outline view for drawing the square outline
+        View outlineView = new View(this);
+        outlineView.setAlpha(0f);
         
-        // Create animated elements
+        // Create the outline path drawable
+        ShapeDrawable outlineShape = new ShapeDrawable();
+        outlineShape.getPaint().setColor(Color.parseColor("#6B4DE6"));
+        outlineShape.getPaint().setStyle(Paint.Style.STROKE);
+        outlineShape.getPaint().setStrokeWidth(dpToPx(4));
+        outlineShape.getPaint().setAntiAlias(true);
+        
+        // Create outline path
+        Path outlinePath = new Path();
+        int finalSquareSize = dpToPx(120);
+        int initialSquareSize = dpToPx(200);  // Bigger initial size
+        float cornerRadius = dpToPx(30);
+        
+        outlinePath.moveTo(initialSquareSize - cornerRadius, 0);
+        outlineShape.setShape(new PathShape(outlinePath, initialSquareSize, initialSquareSize));
+        outlineView.setBackground(outlineShape);
+        
+        FrameLayout.LayoutParams outlineParams = new FrameLayout.LayoutParams(initialSquareSize, initialSquareSize);
+        outlineParams.gravity = Gravity.CENTER;
+        ((ViewGroup) rootView).addView(outlineView, outlineParams);
+
+        // Create filled square view
+        View filledSquare = new View(this);
+        GradientDrawable squareBg = new GradientDrawable();
+        squareBg.setShape(GradientDrawable.RECTANGLE);
+        squareBg.setColor(Color.parseColor("#6B4DE6"));
+        squareBg.setCornerRadius(cornerRadius);
+        filledSquare.setBackground(squareBg);
+        filledSquare.setAlpha(0f);
+        
+        FrameLayout.LayoutParams squareParams = new FrameLayout.LayoutParams(initialSquareSize, initialSquareSize);
+        squareParams.gravity = Gravity.CENTER;
+        ((ViewGroup) rootView).addView(filledSquare, squareParams);
+
+        // Create S path view
+        View sPathView = new View(this);
+        sPathView.setAlpha(0f);
+        
+        ShapeDrawable sShape = new ShapeDrawable();
+        sShape.getPaint().setColor(Color.WHITE);
+        sShape.getPaint().setStyle(Paint.Style.FILL);
+        sShape.getPaint().setAntiAlias(true);
+        
+        Path sPath = new Path();
+        float padding = dpToPx(25);
+        float strokeWidth = dpToPx(16);
+        
+        sPath.moveTo(initialSquareSize - padding - strokeWidth, padding);
+        sPath.cubicTo(
+            initialSquareSize - padding - strokeWidth, padding,
+            padding + strokeWidth, padding + ((initialSquareSize - 2 * padding) * 0.2f),
+            padding + strokeWidth, padding + ((initialSquareSize - 2 * padding) * 0.35f)
+        );
+        sPath.cubicTo(
+            padding + strokeWidth, padding + ((initialSquareSize - 2 * padding) * 0.5f),
+            initialSquareSize - padding - strokeWidth, padding + ((initialSquareSize - 2 * padding) * 0.5f),
+            initialSquareSize - padding - strokeWidth, padding + ((initialSquareSize - 2 * padding) * 0.65f)
+        );
+        sPath.cubicTo(
+            initialSquareSize - padding - strokeWidth, padding + ((initialSquareSize - 2 * padding) * 0.8f),
+            padding + strokeWidth, initialSquareSize - padding,
+            padding + strokeWidth, initialSquareSize - padding
+        );
+        
+        sShape.setShape(new PathShape(sPath, initialSquareSize, initialSquareSize));
+        sPathView.setBackground(sShape);
+        
+        FrameLayout.LayoutParams sPathParams = new FrameLayout.LayoutParams(initialSquareSize, initialSquareSize);
+        sPathParams.gravity = Gravity.CENTER;
+        ((ViewGroup) rootView).addView(sPathView, sPathParams);
+
+        // Create text views
         TextView appNameText = new TextView(this);
-        appNameText.setText("SSSSHHIFT");
+        appNameText.setText("Ssshhift");
         appNameText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40);
-        appNameText.setTypeface(Typeface.DEFAULT_BOLD);
-        appNameText.setTextColor(Color.WHITE);
+        appNameText.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+        appNameText.setTextColor(Color.parseColor("#6B4DE6"));
+        appNameText.setLetterSpacing(0.05f);
         appNameText.setAlpha(0f);
-        
+
+        TextView subtitleText = new TextView(this);
+        subtitleText.setText("Smart Profile Manager");
+        subtitleText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        subtitleText.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+        subtitleText.setTextColor(Color.parseColor("#9B8AE6"));
+        subtitleText.setLetterSpacing(0.02f);
+        subtitleText.setAlpha(0f);
+
         FrameLayout.LayoutParams textParams = new FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        textParams.gravity = Gravity.CENTER;
-        ((ViewGroup) rootView).addView(appNameText, textParams);
-
-        // Create background panel
-        View panel = new View(this);
-        panel.setBackgroundColor(Color.WHITE);
-        FrameLayout.LayoutParams panelParams = new FrameLayout.LayoutParams(
-            0,
-            ViewGroup.LayoutParams.MATCH_PARENT
+        textParams.gravity = Gravity.CENTER_VERTICAL;
+        textParams.leftMargin = dpToPx(180);
+        
+        FrameLayout.LayoutParams subtitleParams = new FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        ((ViewGroup) rootView).addView(panel, panelParams);
+        subtitleParams.gravity = Gravity.CENTER_VERTICAL;
+        subtitleParams.leftMargin = dpToPx(180);
+        subtitleParams.topMargin = dpToPx(40);
+
+        ((ViewGroup) rootView).addView(appNameText, textParams);
+        ((ViewGroup) rootView).addView(subtitleText, subtitleParams);
 
         // Animation state
         final long startTime = System.nanoTime();
-        final long animDuration = TimeUnit.MILLISECONDS.toNanos(1500); // 1.5 seconds total
+        final long animDuration = TimeUnit.MILLISECONDS.toNanos(4000);
         final AtomicBoolean isAnimating = new AtomicBoolean(true);
-        
-        // Fade out current elements first
-        AnimatorSet fadeOut = new AnimatorSet();
-        List<Animator> fadeAnims = new ArrayList<>();
-        fadeAnims.add(ObjectAnimator.ofFloat(progressBar, "alpha", 1f, 0f));
-        fadeAnims.add(ObjectAnimator.ofFloat(loadingText, "alpha", 1f, 0f));
-        fadeAnims.add(ObjectAnimator.ofFloat(title, "alpha", 1f, 0f));
-        fadeAnims.add(ObjectAnimator.ofFloat(tagline, "alpha", 1f, 0f));
-        fadeAnims.add(ObjectAnimator.ofFloat(logo, "alpha", 1f, 0f));
-        for (View wave : soundWaves) {
-            fadeAnims.add(ObjectAnimator.ofFloat(wave, "alpha", 1f, 0f));
-        }
-        fadeOut.playTogether(fadeAnims);
-        fadeOut.setDuration(300);
-        fadeOut.start();
+        final Path fullOutlinePath = new Path();
+        createSquareOutlinePath(fullOutlinePath, initialSquareSize, cornerRadius);
 
-        // Choreograph main animation
-        new Handler().postDelayed(() -> {
-            final Choreographer.FrameCallback frameCallback = new Choreographer.FrameCallback() {
-                @Override
-                public void doFrame(long frameTimeNanos) {
-                    if (!isAnimating.get()) {
-                        return;
-                    }
+        // Start animation immediately
+        final Choreographer.FrameCallback frameCallback = new Choreographer.FrameCallback() {
+            @Override
+            public void doFrame(long frameTimeNanos) {
+                if (!isAnimating.get()) return;
 
-                    float progress = Math.min(1f, (frameTimeNanos - startTime) / (float) animDuration);
+                float progress = Math.min(1f, (frameTimeNanos - startTime) / (float) animDuration);
+
+                // Draw L shapes (0-20%)
+                if (progress <= 0.2f) {
+                    float outlineProgress = progress / 0.2f;
+                    Path currentPath = new Path();
                     
-                    // Custom easing functions
-                    float easeInOut = interpolateEaseInOut(progress);
-                    float easeOut = interpolateEaseOut(progress);
-                    float bounce = interpolateBounce(progress);
+                    // Top-right L
+                    currentPath.moveTo(initialSquareSize - cornerRadius, 0);
+                    currentPath.lineTo(initialSquareSize, 0);
+                    currentPath.lineTo(initialSquareSize, initialSquareSize / 2 * outlineProgress);
                     
-                    // Panel width animation (slides in from left)
-                    float panelWidth = rootView.getWidth() * easeInOut;
-                    panelParams.width = (int) panelWidth;
-                    panel.setLayoutParams(panelParams);
+                    // Bottom-left L
+                    currentPath.moveTo(0, initialSquareSize);
+                    currentPath.lineTo(0, initialSquareSize - (initialSquareSize / 2 * outlineProgress));
                     
-                    // Text animations
-                    if (progress > 0.3f) {
-                        float textProgress = Math.min(1f, (progress - 0.3f) / 0.4f);
-                        appNameText.setAlpha(textProgress);
+                    ShapeDrawable currentShape = new ShapeDrawable();
+                    currentShape.getPaint().setColor(Color.parseColor("#6B4DE6"));
+                    currentShape.getPaint().setStyle(Paint.Style.STROKE);
+                    currentShape.getPaint().setStrokeWidth(dpToPx(4));
+                    currentShape.getPaint().setAntiAlias(true);
+                    currentShape.setShape(new PathShape(currentPath, initialSquareSize, initialSquareSize));
+                    
+                    outlineView.setBackground(currentShape);
+                    outlineView.setAlpha(1f);
+                }
+
+                // Complete square outline (20-40%)
+                if (progress > 0.2f && progress <= 0.4f) {
+                    float outlineProgress = (progress - 0.2f) / 0.2f;
+                    Path currentPath = new Path();
+                    
+                    // Continue from top-right L
+                    currentPath.moveTo(initialSquareSize - cornerRadius, 0);
+                    currentPath.lineTo(initialSquareSize, 0);
+                    currentPath.lineTo(initialSquareSize, initialSquareSize / 2);
+                    // Complete top-right to bottom-right
+                    currentPath.lineTo(initialSquareSize, initialSquareSize * (0.5f + (0.5f * outlineProgress)));
+                    
+                    // Continue from bottom-left L
+                    currentPath.moveTo(0, initialSquareSize);
+                    currentPath.lineTo(0, initialSquareSize / 2);
+                    // Complete bottom-left to top-left
+                    currentPath.lineTo(0, initialSquareSize * (0.5f - (0.5f * outlineProgress)));
+                    
+                    // Draw horizontal lines based on progress
+                    if (outlineProgress > 0) {
+                        float horizontalProgress = Math.min(1f, outlineProgress * 2);
                         
-                        // Text scale with bounce
-                        float scale = textProgress < 1f ? 0.7f + (0.3f * bounce) : 1f;
-                        appNameText.setScaleX(scale);
-                        appNameText.setScaleY(scale);
+                        // Top horizontal line
+                        currentPath.moveTo(initialSquareSize - (initialSquareSize * horizontalProgress), 0);
+                        currentPath.lineTo(initialSquareSize, 0);
                         
-                        // Text rotation
-                        float rotation = (1f - textProgress) * 10f;
-                        appNameText.setRotation(rotation);
+                        // Bottom horizontal line
+                        currentPath.moveTo(0, initialSquareSize);
+                        currentPath.lineTo(initialSquareSize * horizontalProgress, initialSquareSize);
                     }
+                    
+                    ShapeDrawable currentShape = new ShapeDrawable();
+                    currentShape.getPaint().setColor(Color.parseColor("#6B4DE6"));
+                    currentShape.getPaint().setStyle(Paint.Style.STROKE);
+                    currentShape.getPaint().setStrokeWidth(dpToPx(4));
+                    currentShape.getPaint().setAntiAlias(true);
+                    currentShape.setShape(new PathShape(currentPath, initialSquareSize, initialSquareSize));
+                    
+                    outlineView.setBackground(currentShape);
+                }
 
-                    // Final fade to white
-                    if (progress > 0.8f) {
-                        float fadeProgress = (progress - 0.8f) / 0.2f;
-                        panel.setAlpha(1f - fadeProgress);
-                        appNameText.setAlpha(1f - fadeProgress);
-                    }
+                // Fill square (40-50%)
+                if (progress > 0.4f && progress <= 0.5f) {
+                    float fillProgress = (progress - 0.4f) / 0.1f;
+                    float fillEase = interpolateEaseInOut(fillProgress);
+                    
+                    outlineView.setAlpha(1 - fillEase);
+                    filledSquare.setAlpha(fillEase);
+                }
 
-                    // Continue animation or finish
-                    if (progress < 1f) {
-                        choreographer.postFrameCallback(this);
-                    } else {
-                        isAnimating.set(false);
-                        ((ViewGroup) rootView).removeView(panel);
-                        ((ViewGroup) rootView).removeView(appNameText);
-                        onComplete.run();
+                // Show S (50-60%)
+                if (progress > 0.5f && progress <= 0.6f) {
+                    float sProgress = (progress - 0.5f) / 0.1f;
+                    float sEase = interpolateEaseInOut(sProgress);
+                    sPathView.setAlpha(sEase);
+                }
+
+                // Move and shrink to left (60-80%)
+                if (progress > 0.6f && progress <= 0.8f) {
+                    float moveProgress = (progress - 0.6f) / 0.2f;
+                    float moveEase = interpolateEaseInOut(moveProgress);
+                    
+                    float scale = 1 - (0.4f * moveEase);  // Scale from 1.0 to 0.6
+                    // Calculate the distance to move left based on screen width
+                    float screenCenterX = rootView.getWidth() / 2f;
+                    float finalLeftPosition = dpToPx(40);  // Final position from left edge
+                    float startX = 0;  // Starting from center (translation is relative to current position)
+                    float targetX = -(screenCenterX - finalLeftPosition - (initialSquareSize * scale / 2)) * moveEase;
+                    
+                    filledSquare.setScaleX(scale);
+                    filledSquare.setScaleY(scale);
+                    filledSquare.setTranslationX(targetX);
+                    
+                    sPathView.setScaleX(scale);
+                    sPathView.setScaleY(scale);
+                    sPathView.setTranslationX(targetX);
+                }
+
+                // Text animation (80-90%)
+                if (progress > 0.8f && progress <= 0.9f) {
+                    float textProgress = (progress - 0.8f) / 0.1f;
+                    float textEase = interpolateEaseOut(textProgress);
+                    
+                    appNameText.setAlpha(textEase);
+                    appNameText.setTranslationX(dpToPx(20) * (1 - textEase));
+                    
+                    if (textProgress > 0.3f) {
+                        float subtitleProgress = (textProgress - 0.3f) / 0.7f;
+                        subtitleText.setAlpha(subtitleProgress);
+                        subtitleText.setTranslationX(dpToPx(20) * (1 - subtitleProgress));
                     }
                 }
-            };
 
-            // Start the choreographed animation
-            choreographer.postFrameCallback(frameCallback);
-        }, 300);
+                // Final fade out (90-100%)
+                if (progress > 0.9f) {
+                    float fadeProgress = (progress - 0.9f) / 0.1f;
+                    float fadeEase = interpolateEaseInOut(fadeProgress);
+                    
+                    filledSquare.setAlpha(1 - fadeEase);
+                    sPathView.setAlpha(1 - fadeEase);
+                    appNameText.setAlpha(1 - fadeEase);
+                    subtitleText.setAlpha(1 - fadeEase);
+                }
+
+                if (progress < 1f) {
+                    choreographer.postFrameCallback(this);
+                } else {
+                    isAnimating.set(false);
+                    ((ViewGroup) rootView).removeView(outlineView);
+                    ((ViewGroup) rootView).removeView(filledSquare);
+                    ((ViewGroup) rootView).removeView(sPathView);
+                    ((ViewGroup) rootView).removeView(appNameText);
+                    ((ViewGroup) rootView).removeView(subtitleText);
+                    onComplete.run();
+                }
+            }
+        };
+
+        choreographer.postFrameCallback(frameCallback);
+    }
+
+    private void createSquareOutlinePath(Path path, int size, float radius) {
+        path.moveTo(size - radius, 0);
+        path.lineTo(radius, 0);
+        path.quadTo(0, 0, 0, radius);
+        path.lineTo(0, size - radius);
+        path.quadTo(0, size, radius, size);
+        path.lineTo(size - radius, size);
+        path.quadTo(size, size, size, size - radius);
+        path.lineTo(size, radius);
+        path.quadTo(size, 0, size - radius, 0);
+    }
+
+    private float getPathLength(Path path) {
+        PathMeasure measure = new PathMeasure(path, false);
+        return measure.getLength();
+    }
+
+    private void getPathSegment(Path path, float start, float end, Path dst) {
+        PathMeasure measure = new PathMeasure(path, false);
+        dst.reset();
+        measure.getSegment(start, end, dst, true);
+    }
+
+    private int dpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density);
     }
 
     private float interpolateEaseInOut(float t) {
@@ -432,32 +392,6 @@ public class SplashActivity extends AppCompatActivity {
 
     private float interpolateEaseOut(float t) {
         return 1f - (float)Math.pow(1f - t, 3f);
-    }
-
-    private float interpolateBounce(float t) {
-        float n1 = 7.5625f;
-        float d1 = 2.75f;
-
-        if (t < 1f / d1) {
-            return n1 * t * t;
-        } else if (t < 2f / d1) {
-            t -= 1.5f / d1;
-            return n1 * t * t + 0.75f;
-        } else if (t < 2.5f / d1) {
-            t -= 2.25f / d1;
-            return n1 * t * t + 0.9375f;
-        } else {
-            t -= 2.625f / d1;
-            return n1 * t * t + 0.984375f;
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (animationHandler != null) {
-            animationHandler.removeCallbacksAndMessages(null);
-        }
     }
 
     @Override
