@@ -615,8 +615,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         
         if (isEnabled && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
                 == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "Starting Smart Auto Mode worker");
-            SmartAutoWorker.scheduleWork(this);
+            // Only schedule work if it's not already scheduled
+            if (!SmartAutoWorker.isWorkScheduled(this)) {
+                Log.d(TAG, "Starting Smart Auto Mode worker");
+                SmartAutoWorker.scheduleWork(this);
+            } else {
+                Log.d(TAG, "Smart Auto Mode worker already scheduled");
+            }
+        } else {
+            // Cancel any existing work if the feature is disabled
+            SmartAutoWorker.cancelWork(this);
+            Log.d(TAG, "Smart Auto Mode disabled or missing permissions");
         }
     }
 }

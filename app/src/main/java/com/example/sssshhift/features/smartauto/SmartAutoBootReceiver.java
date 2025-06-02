@@ -66,18 +66,18 @@ public class SmartAutoBootReceiver extends BroadcastReceiver {
         if (isEnabled) {
             Log.d(TAG, "Smart Auto Mode is enabled, handling " + action);
             
-            // Cancel any existing work first
+            // First reschedule any active events
+            SmartAutoAlarmManager.rescheduleEventsAfterBoot(context);
+            
+            // Then schedule periodic checks
             SmartAutoWorker.cancelWork(context);
-
-            // Clean up any stale alarms
-            cleanupStaleAlarms(context);
-
-            // Schedule new work
             SmartAutoWorker.scheduleWork(context);
 
-            Log.d(TAG, "Successfully rescheduled work after " + action);
+            Log.d(TAG, "Successfully rescheduled all events and work after " + action);
         } else {
-            Log.d(TAG, "Smart Auto Mode is disabled, not scheduling work");
+            Log.d(TAG, "Smart Auto Mode is disabled, cleaning up any existing events");
+            SmartAutoWorker.cancelWork(context);
+            cleanupStaleAlarms(context);
         }
     }
 

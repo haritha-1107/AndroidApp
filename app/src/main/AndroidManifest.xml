@@ -35,7 +35,7 @@
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
     <!-- Calendar Permissions -->
-    <uses-permission android:name="android.permission.READ_CALENDAR"/>
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
 
     <!-- Alarm Permissions -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
@@ -43,7 +43,12 @@
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
+    <!-- Add wake lock permission -->
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
     <application
+        android:name=".SssshhiftApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -191,29 +196,33 @@
             android:enabled="true"
             android:exported="true"
             android:directBootAware="true">
-            <intent-filter>
+            <intent-filter android:priority="999">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="com.example.sssshhift.SMART_AUTO_ALARM_SILENT" />
-                <action android:name="com.example.sssshhift.SMART_AUTO_ALARM_REVERT" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="com.example.sssshhift.SMART_AUTO_ACTIVATE_PRIMARY" />
+                <action android:name="com.example.sssshhift.SMART_AUTO_ACTIVATE_BACKUP_1" />
+                <action android:name="com.example.sssshhift.SMART_AUTO_ACTIVATE_BACKUP_2" />
+                <action android:name="com.example.sssshhift.SMART_AUTO_REVERT_PRIMARY" />
+                <action android:name="com.example.sssshhift.SMART_AUTO_REVERT_BACKUP_1" />
+                <action android:name="com.example.sssshhift.SMART_AUTO_REVERT_BACKUP_2" />
+                <action android:name="com.example.sssshhift.SMART_AUTO_REVERT_BACKUP_3" />
+                <action android:name="com.example.sssshhift.SMART_AUTO_FINAL_CLEANUP" />
             </intent-filter>
         </receiver>
 
         <receiver
             android:name=".features.smartauto.SmartAutoBootReceiver"
             android:enabled="true"
-            android:exported="true"
-            android:directBootAware="true">
-            <intent-filter android:priority="999">
+            android:exported="true">
+            <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.REBOOT" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
                 <action android:name="android.intent.action.TIME_CHANGED" />
-                <action android:name="android.intent.action.PACKAGE_DATA_CLEARED" />
-                <data android:scheme="package" />
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
 
@@ -223,7 +232,8 @@
             android:exported="false">
             <meta-data
                 android:name="androidx.work.WorkManagerInitializer"
-                android:value="androidx.startup" />
+                android:value="androidx.startup"
+                tools:node="remove" />
         </provider>
 
     </application>

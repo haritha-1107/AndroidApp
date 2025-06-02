@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Smart Auto Mode Settings">
+        
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="auto_mode_enabled"
+            android:title="Enable Smart Auto Mode"
+            android:summary="Automatically control silent mode based on calendar events" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="auto_mode_activate_on_check"
+            android:title="Activate on Check"
+            android:summary="Activate silent mode immediately when checking current events"
+            android:dependency="auto_mode_enabled" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="auto_mode_revert_after_event"
+            android:title="Revert After Event"
+            android:summary="Revert to normal mode when event ends"
+            android:dependency="auto_mode_enabled" />
+
+    </PreferenceCategory>
+</PreferenceScreen> 

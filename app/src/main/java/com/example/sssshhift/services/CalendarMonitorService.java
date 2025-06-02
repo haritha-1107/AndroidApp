@@ -1,5 +1,6 @@
 package com.example.sssshhift.services;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
@@ -9,14 +10,19 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import androidx.core.app.NotificationCompat;
 
 import com.example.sssshhift.utils.CalendarUtils;
 import com.example.sssshhift.utils.NotificationUtils;
+import com.example.sssshhift.features.smartauto.SmartAutoWorker;
 
 public class CalendarMonitorService extends Service {
     private static final String TAG = "CalendarMonitorService";
+    private static final String WAKE_LOCK_TAG = "com.example.sssshhift:CalendarMonitorWakeLock";
+    private static final int NOTIFICATION_ID = 1001;
     private static final String PREF_PREVIOUS_RINGER_MODE = "previous_ringer_mode";
     private static final String PREF_CALENDAR_MODE_ACTIVE = "calendar_mode_active";
     private static final String PREF_LAST_EVENT_CHECK = "last_event_check";
@@ -27,6 +33,8 @@ public class CalendarMonitorService extends Service {
     private AudioManager audioManager;
     private NotificationManager notificationManager;
     private SharedPreferences sharedPreferences;
+    private PowerManager.WakeLock wakeLock;
+    private boolean isServiceRunning = false;
     private boolean wasInCalendarMode = false;
     private long lastEventEndTime = 0;
 
@@ -44,19 +52,62 @@ public class CalendarMonitorService extends Service {
         lastEventEndTime = sharedPreferences.getLong(PREF_LAST_EVENT_CHECK, 0);
 
         // Create notification channel
-        NotificationUtils.createNotificationChannel(this);
+        createNotificationChannel();
+
+        // Start service in foreground
+        startForeground(NOTIFICATION_ID, createNotification());
+
+        // Acquire wake lock
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            WAKE_LOCK_TAG
+        );
+        wakeLock.acquire();
 
         initializeCalendarCheck();
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                "calendar_monitor_channel",
+                "Calendar Monitor Service",
+                NotificationManager.IMPORTANCE_LOW
+            );
+            channel.setDescription("Monitors calendar events for silent mode");
+            channel.setShowBadge(false);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private NotificationCompat.Builder createNotificationBuilder() {
+        return new NotificationCompat.Builder(this, "calendar_monitor_channel")
+            .setSmallIcon(android.R.drawable.ic_menu_my_calendar)
+            .setContentTitle("Calendar Monitor Active")
+            .setContentText("Monitoring calendar events")
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOngoing(true);
+    }
+
+    private android.app.Notification createNotification() {
+        return createNotificationBuilder().build();
     }
 
     private void initializeCalendarCheck() {
         calendarCheckRunnable = new Runnable() {
             @Override
             public void run() {
+                if (!isServiceRunning) {
+                    Log.d(TAG, "Service no longer running, stopping calendar check");
+                    return;
+                }
+
                 checkCalendarAndUpdateRingerMode();
                 handler.postDelayed(this, CHECK_INTERVAL);
             }
         };
+        isServiceRunning = true;
         handler.post(calendarCheckRunnable);
     }
 
@@ -93,8 +144,12 @@ public class CalendarMonitorService extends Service {
                     .putLong(PREF_LAST_EVENT_CHECK, lastEventEndTime)
                     .apply();
 
+            // Schedule work to ensure continuous monitoring
+            SmartAutoWorker.scheduleWork(this);
+
         } catch (Exception e) {
             Log.e(TAG, "Error in calendar check: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -173,27 +228,44 @@ public class CalendarMonitorService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "Calendar Monitor Service started");
-        return START_STICKY; // Restart service if killed
+        
+        if (!isServiceRunning) {
+            isServiceRunning = true;
+            initializeCalendarCheck();
+        }
+        
+        return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "Calendar Monitor Service destroyed");
+        Log.d(TAG, "Calendar Monitor Service being destroyed");
+        
+        isServiceRunning = false;
 
         if (handler != null && calendarCheckRunnable != null) {
             handler.removeCallbacks(calendarCheckRunnable);
         }
 
-        // Save last state before destruction
-        sharedPreferences.edit()
-                .putLong(PREF_LAST_EVENT_CHECK, lastEventEndTime)
-                .apply();
+        if (wakeLock != null && wakeLock.isHeld()) {
+            try {
+                wakeLock.release();
+                Log.d(TAG, "Wake lock released");
+            } catch (Exception e) {
+                Log.e(TAG, "Error releasing wake lock: " + e.getMessage());
+            }
+        }
+
+        // Schedule work to ensure monitoring continues even after service destruction
+        SmartAutoWorker.scheduleWork(this);
+
+        super.onDestroy();
+        Log.d(TAG, "Calendar Monitor Service destroyed");
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null; // This is an unbound service
+        return null;
     }
 
     /**

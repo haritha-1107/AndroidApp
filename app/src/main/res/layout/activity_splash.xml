@@ -6,215 +6,209 @@
     android:background="@color/white"
     android:fitsSystemWindows="true">
 
-    <!-- Subtle Background Elements for Visual Interest -->
+    <!-- Dynamic Background Elements -->
     <ImageView
-        android:id="@+id/background_circle1"
-        android:layout_width="200dp"
+        android:id="@+id/wave_bg_1"
+        android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="-120dp"
+        android:layout_alignParentTop="true"
         android:alpha="0.05"
-        android:src="@drawable/circle_shape"
+        android:scaleType="fitXY"
+        android:src="@drawable/wave_shape"
         android:tint="@color/primary" />
 
     <ImageView
-        android:id="@+id/background_circle2"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="80dp"
-        android:alpha="0.03"
-        android:src="@drawable/circle_shape"
+        android:id="@+id/wave_bg_2"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:alpha="0.05"
+        android:rotation="180"
+        android:scaleType="fitXY"
+        android:src="@drawable/wave_shape"
         android:tint="@color/accent" />
 
+    <!-- Sound Wave Animation Container -->
+    <LinearLayout
+        android:id="@+id/sound_wave_container"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!-- Sound Wave Bars (5 on each side) -->
+        <View
+            android:id="@+id/wave_1"
+            android:layout_width="4dp"
+            android:layout_height="20dp"
+            android:layout_margin="2dp"
+            android:background="@color/primary"
+            android:alpha="0" />
+
+        <View
+            android:id="@+id/wave_2"
+            android:layout_width="4dp"
+            android:layout_height="30dp"
+            android:layout_margin="2dp"
+            android:background="@color/primary"
+            android:alpha="0" />
+
+        <View
+            android:id="@+id/wave_3"
+            android:layout_width="4dp"
+            android:layout_height="40dp"
+            android:layout_margin="2dp"
+            android:background="@color/primary"
+            android:alpha="0" />
+
+        <View
+            android:id="@+id/wave_4"
+            android:layout_width="4dp"
+            android:layout_height="50dp"
+            android:layout_margin="2dp"
+            android:background="@color/primary"
+            android:alpha="0" />
+
+        <View
+            android:id="@+id/wave_5"
+            android:layout_width="4dp"
+            android:layout_height="45dp"
+            android:layout_margin="2dp"
+            android:background="@color/primary"
+            android:alpha="0" />
+
+        <!-- Main Phone Icon in Center -->
+        <ImageView
+            android:id="@+id/splash_logo"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginHorizontal="16dp"
+            android:contentDescription="Sssshhhiftt Logo"
+            android:src="@drawable/ic_phone_vibrate"
+            android:tint="@color/primary" />
+
+        <View
+            android:id="@+id/wave_6"
+            android:layout_width="4dp"
+            android:layout_height="45dp"
+            android:layout_margin="2dp"
+            android:background="@color/primary"
+            android:alpha="0" />
+
+        <View
+            android:id="@+id/wave_7"
+            android:layout_width="4dp"
+            android:layout_height="50dp"
+            android:layout_margin="2dp"
+            android:background="@color/primary"
+            android:alpha="0" />
+
+        <View
+            android:id="@+id/wave_8"
+            android:layout_width="4dp"
+            android:layout_height="40dp"
+            android:layout_margin="2dp"
+            android:background="@color/primary"
+            android:alpha="0" />
+
+        <View
+            android:id="@+id/wave_9"
+            android:layout_width="4dp"
+            android:layout_height="30dp"
+            android:layout_margin="2dp"
+            android:background="@color/primary"
+            android:alpha="0" />
+
+        <View
+            android:id="@+id/wave_10"
+            android:layout_width="4dp"
+            android:layout_height="20dp"
+            android:layout_margin="2dp"
+            android:background="@color/primary"
+            android:alpha="0" />
+
+    </LinearLayout>
+
+    <!-- App Title and Tagline Container -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:gravity="center">
-
-        <!-- Phone Animation Container -->
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp">
-
-            <!-- Phone Shadow -->
-            <ImageView
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="4dp"
-                android:layout_marginStart="4dp"
-                android:alpha="0.1"
-                android:src="@drawable/ic_phone_vibrate"
-                android:tint="@color/black" />
-
-            <!-- Main Phone Icon -->
-            <ImageView
-                android:id="@+id/splash_logo"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:layout_centerInParent="true"
-                android:contentDescription="Sssshhhiftt Logo"
-                android:src="@drawable/ic_phone_vibrate"
-                android:tint="@color/primary" />
-
-            <!-- Vibration Effect Ring -->
-            <ImageView
-                android:id="@+id/logo_ring"
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:layout_centerInParent="true"
-                android:alpha="0"
-                android:src="@drawable/ring_shape"
-                android:tint="@color/accent" />
-
-        </RelativeLayout>
+        android:layout_below="@id/sound_wave_container"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <!-- App Name with Enhanced Styling -->
         <TextView
             android:id="@+id/splash_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:letterSpacing="0.15"
             android:text="Sssshhhiftt"
-            android:textSize="34sp"
-            android:textStyle="bold"
             android:textColor="@color/text_primary"
-            android:letterSpacing="0.05"
-            android:layout_marginBottom="12dp"
-            android:fontFamily="sans-serif-medium"
-            android:elevation="2dp" />
+            android:textSize="38sp"
+            android:textStyle="bold"
+            android:shadowColor="#40000000"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="4"
+            android:alpha="0"
+            android:elevation="4dp"
+            android:translationY="20dp" />
 
         <!-- Enhanced Tagline -->
         <TextView
             android:id="@+id/splash_tagline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-medium"
             android:text="Smart Profile Manager"
-            android:textSize="18sp"
             android:textColor="@color/text_secondary"
-            android:fontFamily="sans-serif-light"
-            android:layout_marginBottom="8dp" />
-
-        <!-- Feature Highlight -->
-        <LinearLayout
-            android:id="@+id/feature_highlight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
+            android:textSize="20sp"
+            android:shadowColor="#20000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="2"
             android:alpha="0"
-            android:layout_marginTop="16dp">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_timer"
-                android:tint="@color/accent"
-                android:layout_marginEnd="8dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Timer Based"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginEnd="16dp" />
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_location1"
-                android:tint="@color/accent"
-                android:layout_marginEnd="8dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Location Based"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary" />
-
-        </LinearLayout>
+            android:elevation="2dp"
+            android:translationY="20dp" />
 
     </LinearLayout>
 
-    <!-- Loading Elements Container -->
+    <!-- Bottom Loading Elements -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="24dp"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:layout_marginBottom="32dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <!-- Styled Progress Bar -->
-        <ProgressBar
-            android:id="@+id/splash_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:indeterminateTint="@color/primary"
-            style="@android:style/Widget.Material.ProgressBar" />
-
-        <!-- Loading Text -->
+        <!-- Loading Text with Typing Animation -->
         <TextView
             android:id="@+id/loading_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loading..."
-            android:textSize="14sp"
-            android:textColor="@color/text_secondary"
-            android:alpha="0"
-            android:layout_marginBottom="8dp"
-            android:fontFamily="sans-serif-light" />
-
-        <!-- Loading Dots -->
-        <LinearLayout
-            android:id="@+id/loading_dots"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp"
-            android:alpha="0">
-
-            <View
-                android:id="@+id/dot1"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_margin="4dp"
-                android:background="@drawable/dot_shape" />
-
-            <View
-                android:id="@+id/dot2"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_margin="4dp"
-                android:background="@drawable/dot_shape" />
-
-            <View
-                android:id="@+id/dot3"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_margin="4dp"
-                android:background="@drawable/dot_shape" />
-
-        </LinearLayout>
-
-        <!-- Version Info with Better Styling -->
-        <TextView
-            android:id="@+id/version_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="v1.0.0"
-            android:textSize="12sp"
-            android:textColor="@color/text_secondary"
             android:fontFamily="monospace"
-            android:alpha="0" />
+            android:text=""
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+
+        <!-- Modern Progress Bar -->
+        <ProgressBar
+            android:id="@+id/splash_progress"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="200dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="16dp"
+            android:alpha="0"
+            android:progressTint="@color/primary" />
 
     </LinearLayout>
 

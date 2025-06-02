@@ -24,17 +24,21 @@ import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.Date;
 
 public class SmartAutoWorker extends Worker {
     private static final String TAG = "SmartAutoWorker";
-    private static final String WORK_NAME = "smart_auto_calendar_check";
+    private static final String WORK_NAME = "SmartAutoPeriodicWork";
+    private static final long WORK_INTERVAL_MINUTES = 15;
 
     public SmartAutoWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
@@ -43,70 +47,45 @@ public class SmartAutoWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        Context context = getApplicationContext();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-
         try {
-            // Check if feature is enabled
-            boolean isEnabled = prefs.getBoolean("auto_mode_enabled", false);
-            Log.d(TAG, "Smart Auto Mode enabled: " + isEnabled);
+            Log.d(TAG, "Starting periodic calendar check");
             
-            if (!isEnabled) {
-                Log.d(TAG, "Smart Auto Mode is disabled, skipping calendar check");
+            Context context = getApplicationContext();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            
+            // Only proceed if the feature is enabled
+            if (!prefs.getBoolean("auto_mode_enabled", false)) {
+                Log.d(TAG, "Smart Auto Mode is disabled, skipping work");
                 return Result.success();
             }
 
-            // Check calendar permission
-            boolean hasPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR)
-                    == PackageManager.PERMISSION_GRANTED;
-            Log.d(TAG, "Calendar permission granted: " + hasPermission);
-            if (!hasPermission) {
-                Log.e(TAG, "Calendar permission not granted, scheduling retry");
-                return Result.retry();
+            // Clean up any stale events first
+            SmartAutoAlarmManager.cleanupExpiredEvents(context);
+
+            // Check and schedule upcoming events
+            long windowStart = System.currentTimeMillis();
+            long windowEnd = windowStart + (24 * 60 * 60 * 1000); // Next 24 hours
+
+            try {
+                CalendarEventChecker.checkAndScheduleEvents(
+                    context,
+                    windowStart,
+                    windowEnd,
+                    true // Only consider busy events
+                );
+                Log.d(TAG, "Successfully checked and scheduled calendar events");
+                return Result.success();
+            } catch (Exception e) {
+                Log.e(TAG, "Error checking calendar events: " + e.getMessage());
+                e.printStackTrace();
+                // Don't fail the work, retry on next schedule
+                return Result.success();
             }
 
-            // Check DND permission
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && 
-                (notificationManager == null || !notificationManager.isNotificationPolicyAccessGranted())) {
-                Log.e(TAG, "DND permission not granted, scheduling retry");
-                return Result.retry();
-            }
-
-            // Get current settings
-            Set<String> keywords = prefs.getStringSet("auto_mode_keywords", new HashSet<>());
-            int preEventOffset = prefs.getInt("auto_mode_pre_event_offset", 5);
-            boolean revertAfterEvent = prefs.getBoolean("auto_mode_revert_after_event", true);
-            boolean busyEventsOnly = prefs.getBoolean("auto_mode_busy_events_only", true);
-            
-            Log.d(TAG, "Current settings - Keywords: " + keywords + 
-                       ", Pre-event offset: " + preEventOffset + 
-                       ", Revert after event: " + revertAfterEvent +
-                       ", Busy events only: " + busyEventsOnly);
-
-            // Calculate time window (next 24 hours)
-            long now = System.currentTimeMillis();
-            long windowStart = now;
-            long windowEnd = now + TimeUnit.HOURS.toMillis(24);
-
-            checkUpcomingEvents(context, windowStart, windowEnd, keywords, preEventOffset, busyEventsOnly);
-            
-            // Schedule next check
-            scheduleNextCheck(context);
-            
-            return Result.success();
-        } catch (SecurityException e) {
-            Log.e(TAG, "Security exception in calendar worker: " + e.getMessage(), e);
-            return Result.retry();
         } catch (Exception e) {
-            Log.e(TAG, "Error in calendar worker: " + e.getMessage(), e);
-            // Only retry if it's not a fatal error
-            if (e instanceof IllegalArgumentException || 
-                e instanceof NullPointerException || 
-                e instanceof IllegalStateException) {
-                return Result.failure();
-            }
-            return Result.retry();
+            Log.e(TAG, "Error in worker: " + e.getMessage());
+            e.printStackTrace();
+            return Result.success(); // Don't retry, wait for next schedule
         }
     }
 
@@ -115,11 +94,14 @@ public class SmartAutoWorker extends Worker {
         Log.d(TAG, "Keywords: " + keywords);
         Log.d(TAG, "Pre-event offset: " + preEventOffset + " minutes");
         Log.d(TAG, "Busy events only: " + busyEventsOnly);
-
         Log.d(TAG, "Checking events between: " + new Date(windowStart) + " and " + new Date(windowEnd));
 
         // Clean up old events first
         cleanupOldEvents(context);
+
+        // Get current active events before making any changes
+        Set<String> activeEvents = SmartAutoAlarmManager.getActiveEvents(context);
+        long currentTime = System.currentTimeMillis();
 
         ContentResolver contentResolver = context.getContentResolver();
         Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
@@ -132,11 +114,15 @@ public class SmartAutoWorker extends Worker {
                 CalendarContract.Instances.BEGIN,
                 CalendarContract.Instances.END,
                 CalendarContract.Instances.AVAILABILITY,
-                CalendarContract.Instances.CALENDAR_ID
+                CalendarContract.Instances.ALL_DAY,
+                CalendarContract.Instances.SELF_ATTENDEE_STATUS
         };
 
-        // Query calendar events
-        try (Cursor cursor = contentResolver.query(builder.build(), projection, null, null, null)) {
+        // Only get events that we haven't declined
+        String selection = CalendarContract.Instances.SELF_ATTENDEE_STATUS + " != " + 
+                         CalendarContract.Attendees.ATTENDEE_STATUS_DECLINED;
+
+        try (Cursor cursor = contentResolver.query(builder.build(), projection, selection, null, null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 Log.d(TAG, "Found calendar events to check");
                 int eventCount = cursor.getCount();
@@ -147,22 +133,56 @@ public class SmartAutoWorker extends Worker {
                     @SuppressLint("Range") long begin = cursor.getLong(cursor.getColumnIndex(CalendarContract.Instances.BEGIN));
                     @SuppressLint("Range") long end = cursor.getLong(cursor.getColumnIndex(CalendarContract.Instances.END));
                     @SuppressLint("Range") int availability = cursor.getInt(cursor.getColumnIndex(CalendarContract.Instances.AVAILABILITY));
-                    @SuppressLint("Range") long calendarId = cursor.getLong(cursor.getColumnIndex(CalendarContract.Instances.CALENDAR_ID));
+                    @SuppressLint("Range") boolean isAllDay = cursor.getInt(cursor.getColumnIndex(CalendarContract.Instances.ALL_DAY)) == 1;
 
-                    Log.d(TAG, "Checking event: " + title);
-                    Log.d(TAG, "Event details - Start: " + new Date(begin) + 
-                               ", End: " + new Date(end) + 
-                               ", Calendar ID: " + calendarId + 
-                               ", Availability: " + availability);
-
-                    if (isEventMatch(title, availability, busyEventsOnly, keywords)) {
-                        Log.d(TAG, "Event matches criteria, scheduling ringer mode change");
-                        scheduleRingerModeChange(context, begin, end);
-                    } else {
-                        Log.d(TAG, "Event does not match criteria - " +
-                                  "Title match: " + (title != null && containsKeyword(title, keywords)) +
-                                  ", Busy check: " + (!busyEventsOnly || availability == CalendarContract.Events.AVAILABILITY_BUSY));
+                    // Skip all-day events
+                    if (isAllDay) {
+                        Log.d(TAG, "Skipping all-day event: " + title);
+                        continue;
                     }
+
+                    // Calculate activation time with pre-event offset
+                    long activationTime = begin - (preEventOffset * 60L * 1000L);
+
+                    // Skip events that have already ended
+                    if (end <= currentTime) {
+                        Log.d(TAG, "Skipping ended event: " + title);
+                        continue;
+                    }
+
+                    // Skip events where even the pre-event time has passed
+                    if (activationTime <= currentTime) {
+                        Log.d(TAG, "Skipping event where pre-event time has passed: " + title);
+                        continue;
+                    }
+
+                    // Check if this event matches our criteria
+                    boolean shouldActivate = true;
+
+                    // Check if we should only handle busy events
+                    if (busyEventsOnly && availability != CalendarContract.Events.AVAILABILITY_BUSY) {
+                        Log.d(TAG, "Skipping non-busy event: " + title);
+                        shouldActivate = false;
+                    }
+
+                    // Check if event matches keywords (if any are set)
+                    if (!keywords.isEmpty() && !containsKeyword(title, keywords)) {
+                        Log.d(TAG, "Event doesn't match any keywords: " + title);
+                        shouldActivate = false;
+                    }
+
+                    if (shouldActivate) {
+                        Log.d(TAG, String.format("Scheduling silent mode for event: %s", title));
+                        Log.d(TAG, String.format("- Pre-event activation time: %s", new Date(activationTime)));
+                        Log.d(TAG, String.format("- Event start: %s", new Date(begin)));
+                        Log.d(TAG, String.format("- Event end: %s", new Date(end)));
+                        
+                        // Schedule the ringer mode change with the calculated pre-event time
+                        SmartAutoAlarmManager.scheduleRingerModeChange(context, activationTime, end);
+                    } else {
+                        Log.d(TAG, "Event doesn't meet criteria for silent mode: " + title);
+                    }
+
                 } while (cursor.moveToNext());
             } else {
                 Log.d(TAG, "No calendar events found in the time window");
@@ -249,50 +269,61 @@ public class SmartAutoWorker extends Worker {
         SmartAutoAlarmManager.scheduleRingerModeChange(context, eventStart, eventEnd);
     }
 
-    private void scheduleNextCheck(Context context) {
-        // Schedule next check in 15 minutes
-        WorkManager.getInstance(context).enqueueUniqueWork(
-            "smart_auto_next_check",
-            ExistingWorkPolicy.REPLACE,
-            new OneTimeWorkRequest.Builder(SmartAutoWorker.class)
-                .setInitialDelay(15, TimeUnit.MINUTES)
-                .build()
-        );
+    public static boolean isWorkScheduled(Context context) {
+        WorkManager workManager = WorkManager.getInstance(context);
+        ListenableFuture<List<WorkInfo>> future = workManager.getWorkInfosForUniqueWork(WORK_NAME);
+        try {
+            List<WorkInfo> workInfos = future.get();
+            for (WorkInfo workInfo : workInfos) {
+                if (workInfo.getState() == WorkInfo.State.RUNNING || 
+                    workInfo.getState() == WorkInfo.State.ENQUEUED) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking work status", e);
+        }
+        return false;
     }
 
     public static void scheduleWork(Context context) {
-        Constraints constraints = new Constraints.Builder()
+        try {
+            Log.d(TAG, "Scheduling periodic work");
+
+            Constraints constraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
                 .build();
 
-        // Schedule periodic work every 15 minutes
-        PeriodicWorkRequest periodicWork = new PeriodicWorkRequest.Builder(
+            PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
                 SmartAutoWorker.class,
-                15, TimeUnit.MINUTES)
+                WORK_INTERVAL_MINUTES,
+                TimeUnit.MINUTES)
                 .setConstraints(constraints)
+                .addTag("calendar_check")
                 .build();
 
-        // Schedule immediate one-time work
-        OneTimeWorkRequest immediateWork = new OneTimeWorkRequest.Builder(SmartAutoWorker.class)
-                .setConstraints(constraints)
-                .build();
+            // Use REPLACE policy to ensure we don't queue multiple workers
+            WorkManager.getInstance(context)
+                .enqueueUniquePeriodicWork(
+                    WORK_NAME,
+                    ExistingPeriodicWorkPolicy.UPDATE,
+                    workRequest
+                );
 
-        WorkManager workManager = WorkManager.getInstance(context);
-        
-        // Enqueue immediate check
-        workManager.enqueue(immediateWork);
-        
-        // Schedule periodic checks
-        workManager.enqueueUniquePeriodicWork(
-                WORK_NAME,
-                ExistingPeriodicWorkPolicy.REPLACE,
-                periodicWork);
-        
-        Log.d(TAG, "Scheduled immediate and periodic work for calendar checks");
+            Log.d(TAG, "Successfully scheduled periodic work");
+        } catch (Exception e) {
+            Log.e(TAG, "Error scheduling work: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public static void cancelWork(Context context) {
-        WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME);
-        Log.d(TAG, "Cancelled all scheduled work");
+        try {
+            WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME);
+            Log.d(TAG, "Cancelled periodic work");
+        } catch (Exception e) {
+            Log.e(TAG, "Error cancelling work: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 } 
